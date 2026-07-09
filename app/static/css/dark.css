@@ -1,0 +1,6 @@
+/*
+  dark.css is intentionally empty.
+  All dark mode styles are handled through CSS custom properties
+  in main.css under the [data-theme="dark"] selector.
+  This file is kept so existing <link> tags don't 404.
+*/

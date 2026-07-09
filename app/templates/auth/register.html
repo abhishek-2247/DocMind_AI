@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Register — DocMind AI{% endblock %}
+{% block auth_content %}
+<div class="auth-page d-flex align-items-center justify-content-center min-vh-100 py-5">
+  <div class="auth-card glass-card p-5">
+    <div class="text-center mb-4">
+      <div class="auth-logo mb-3">
+        <i class="bi bi-cpu-fill text-accent" style="font-size:2.5rem"></i>
+      </div>
+      <h2 class="fw-bold mb-1">Create Your Account</h2>
+      <p class="text-muted small">Join DocMind AI — your intelligent document workspace</p>
+    </div>
+    <form method="POST" action="{{ url_for('auth.register') }}" novalidate>
+      <div class="mb-3">
+        <label class="form-label fw-semibold" for="username">Username</label>
+        <div class="input-group">
+          <span class="input-group-text bg-transparent"><i class="bi bi-person"></i></span>
+          <input type="text" id="username" name="username" class="form-control" placeholder="yourname" required autofocus minlength="3"/>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label fw-semibold" for="email">Email address</label>
+        <div class="input-group">
+          <span class="input-group-text bg-transparent"><i class="bi bi-envelope"></i></span>
+          <input type="email" id="email" name="email" class="form-control" placeholder="you@example.com" required/>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label fw-semibold" for="password">Password</label>
+        <div class="input-group">
+          <span class="input-group-text bg-transparent"><i class="bi bi-lock"></i></span>
+          <input type="password" id="password" name="password" class="form-control" placeholder="Min. 8 characters" required minlength="8"/>
+        </div>
+      </div>
+      <div class="mb-4">
+        <label class="form-label fw-semibold" for="confirm_password">Confirm Password</label>
+        <div class="input-group">
+          <span class="input-group-text bg-transparent"><i class="bi bi-lock-fill"></i></span>
+          <input type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="Repeat password" required/>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+        <i class="bi bi-person-plus me-2"></i>Create Account
+      </button>
+    </form>
+    <hr class="my-4"/>
+    <p class="text-center text-muted small mb-0">
+      Already have an account?
+      <a href="{{ url_for('auth.login') }}" class="text-accent fw-semibold">Sign in</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

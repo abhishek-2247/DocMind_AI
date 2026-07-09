@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}{{ document.original_name }} — DocMind AI{% endblock %}
+{% block page_title %}<i class="bi bi-file-earmark-text me-2 text-accent"></i>{{ document.original_name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-3">
+  <div class="row g-4">
+
+    <!-- Doc info sidebar -->
+    <div class="col-lg-4 col-xl-3">
+      <div class="glass-card p-4 mb-3">
+        <div class="text-center mb-3">
+          <div class="doc-type-large type-{{ document.file_type }}">{{ document.file_type.upper() }}</div>
+          <h6 class="fw-bold mt-2 mb-0 text-truncate">{{ document.original_name }}</h6>
+        </div>
+        <table class="table table-sm table-borderless mb-0 small">
+          <tr><td class="text-muted">Size</td><td class="text-end fw-semibold">{{ document.size_human }}</td></tr>
+          <tr><td class="text-muted">Pages</td><td class="text-end fw-semibold">{{ document.page_count }}</td></tr>
+          <tr><td class="text-muted">Words</td><td class="text-end fw-semibold">{{ "{:,}".format(document.word_count) }}</td></tr>
+          <tr><td class="text-muted">Read time</td><td class="text-end fw-semibold">~{{ document.reading_time }} min</td></tr>
+          <tr><td class="text-muted">Uploaded</td><td class="text-end fw-semibold">{{ document.uploaded_at.strftime('%d %b %Y') }}</td></tr>
+        </table>
+      </div>
+
+      {% if document.ai_tags %}
+      <div class="glass-card p-4 mb-3">
+        <h6 class="fw-bold mb-2"><i class="bi bi-tags me-2 text-accent"></i>AI Tags</h6>
+        <div class="d-flex flex-wrap gap-2">
+          {% for tag in document.ai_tags.split(',') %}
+            <span class="badge bg-accent-soft text-accent rounded-pill">{{ tag.strip() }}</span>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="d-grid gap-2">
+        <a href="{{ url_for('ai.chat', doc_id=document.id) }}" class="btn btn-primary"><i class="bi bi-chat-dots me-2"></i>Chat with AI</a>
+        <a href="{{ url_for('ai.summary', doc_id=document.id) }}" class="btn btn-success"><i class="bi bi-file-text me-2"></i>Generate Summary</a>
+        <a href="{{ url_for('ai.insights', doc_id=document.id) }}" class="btn btn-warning text-dark"><i class="bi bi-lightbulb me-2"></i>AI Insights</a>
+        <a href="{{ url_for('documents.download', doc_id=document.id) }}" class="btn btn-outline-secondary"><i class="bi bi-download me-2"></i>Download</a>
+      </div>
+    </div>
+
+    <!-- Content preview -->
+    <div class="col-lg-8 col-xl-9">
+      <div class="glass-card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 class="fw-bold mb-0"><i class="bi bi-text-left me-2 text-accent"></i>Document Content Preview</h6>
+          <span class="badge bg-secondary">{{ "{:,}".format(document.word_count) }} words</span>
+        </div>
+        {% if document.ai_summary %}
+        <div class="alert alert-info mb-3">
+          <strong><i class="bi bi-robot me-2"></i>AI Summary:</strong>
+          <p class="mb-0 mt-1 small">{{ document.ai_summary[:600] }}{% if document.ai_summary|length > 600 %}…{% endif %}</p>
+        </div>
+        {% endif %}
+        <div class="doc-content-preview">
+          <pre class="text-wrap small">{{ document.content_text[:4000] }}{% if document.content_text|length > 4000 %}
+…<em class="text-muted">[truncated — use AI Chat for full document Q&A]</em>{% endif %}</pre>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

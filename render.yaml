@@ -1,0 +1,22 @@
+# ============================================================
+# Render deployment configuration
+# Docs: https://render.com/docs/blueprint-spec
+# ============================================================
+services:
+  - type: web
+    name: docmind-ai
+    runtime: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120 --preload"
+    healthCheckPath: /health
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: IBM_API_KEY
+        sync: false
+      - key: IBM_PROJECT_ID
+        sync: false
+      - key: IBM_WATSONX_URL
+        value: https://eu-gb.ml.cloud.ibm.com

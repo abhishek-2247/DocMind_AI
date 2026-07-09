@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — DocMind AI{% endblock %}
+{% block page_title %}<i class="bi bi-grid-1x2-fill me-2 text-accent"></i>Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-3">
+
+  <!-- Welcome banner -->
+  <div class="welcome-banner glass-card p-4 mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
+    <div>
+      <h4 class="fw-bold mb-1">Welcome back, {{ current_user.username }}</h4>
+      <p class="text-muted mb-0">Here's a quick look at your document workspace.</p>
+    </div>
+    <a href="{{ url_for('documents.index') }}" class="btn btn-primary">
+      <i class="bi bi-upload me-2"></i>Upload a Document
+    </a>
+  </div>
+
+  <!-- Stat cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+      <div class="stat-card glass-card p-4">
+        <div class="stat-icon bg-primary-soft"><i class="bi bi-file-earmark-text text-primary fs-4"></i></div>
+        <div class="stat-info">
+          <div class="stat-value">{{ total_docs }}</div>
+          <div class="stat-label">Total Documents</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+      <div class="stat-card glass-card p-4">
+        <div class="stat-icon bg-success-soft"><i class="bi bi-file-word text-success fs-4"></i></div>
+        <div class="stat-info">
+          <div class="stat-value">{{ "{:,}".format(total_words) }}</div>
+          <div class="stat-label">Words Processed</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+      <div class="stat-card glass-card p-4">
+        <div class="stat-icon bg-warning-soft"><i class="bi bi-book text-warning fs-4"></i></div>
+        <div class="stat-info">
+          <div class="stat-value">{{ total_pages }}</div>
+          <div class="stat-label">Pages Indexed</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+      <div class="stat-card glass-card p-4">
+        <div class="stat-icon bg-purple-soft"><i class="bi bi-chat-dots text-purple fs-4"></i></div>
+        <div class="stat-info">
+          <div class="stat-value">{{ recent_convs|length }}</div>
+          <div class="stat-label">Conversations</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick actions -->
+  <div class="row g-3 mb-4">
+    <div class="col-12"><p class="fw-semibold text-muted text-uppercase small mb-0" style="letter-spacing:.06em">AI Tools</p></div>
+    {% set actions = [
+      ('ai.chat', 'bi-chat-dots-fill', 'primary', 'AI Chat', 'Ask questions about your documents'),
+      ('ai.summary', 'bi-file-text-fill', 'success', 'Summarise', 'Generate concise or detailed summaries'),
+      ('ai.compare', 'bi-files', 'warning', 'Compare', 'Compare two documents side by side'),
+      ('ai.insights', 'bi-lightbulb-fill', 'purple', 'Insights', 'Extract keywords, topics and smart tags'),
+    ] %}
+    {% for endpoint, icon, color, label, desc in actions %}
+    <div class="col-sm-6 col-xl-3">
+      <a href="{{ url_for(endpoint) }}" class="quick-action-card glass-card p-4 d-flex align-items-center gap-3 text-decoration-none">
+        <div class="stat-icon bg-{{ color }}-soft flex-shrink-0">
+          <i class="bi {{ icon }} text-{{ color }} fs-4"></i>
+        </div>
+        <div>
+          <div class="fw-semibold">{{ label }}</div>
+          <div class="text-muted small">{{ desc }}</div>
+        </div>
+        <i class="bi bi-chevron-right ms-auto text-muted"></i>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Recent docs + conversations -->
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <div class="glass-card p-4 h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 class="fw-bold mb-0"><i class="bi bi-clock-history me-2 text-accent"></i>Recently Uploaded</h6>
+          <a href="{{ url_for('documents.index') }}" class="btn btn-sm btn-outline-primary">View All</a>
+        </div>
+        {% if recent_docs %}
+          <div class="list-group list-group-flush">
+            {% for doc in recent_docs %}
+            <a href="{{ url_for('documents.view', doc_id=doc.id) }}"
+               class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3 bg-transparent border-0 border-bottom">
+              <div class="doc-type-badge type-{{ doc.file_type }}">{{ doc.file_type.upper() }}</div>
+              <div class="flex-grow-1 overflow-hidden">
+                <div class="fw-semibold text-truncate">{{ doc.original_name }}</div>
+                <div class="text-muted small">{{ doc.size_human }}&nbsp;&nbsp;{{ doc.word_count|int }} words&nbsp;&nbsp;{{ doc.uploaded_at.strftime('%d %b %Y') }}</div>
+              </div>
+              <i class="bi bi-chevron-right text-muted"></i>
+            </a>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-state text-center py-5">
+            <i class="bi bi-folder2-open text-muted" style="font-size:3rem"></i>
+            <p class="text-muted mt-3 mb-2">No documents yet.</p>
+            <a href="{{ url_for('documents.index') }}" class="btn btn-primary btn-sm">Upload Your First File</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="glass-card p-4 h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 class="fw-bold mb-0"><i class="bi bi-chat-dots-fill me-2 text-accent"></i>Recent Conversations</h6>
+          <a href="{{ url_for('ai.chat') }}" class="btn btn-sm btn-outline-primary">New Chat</a>
+        </div>
+        {% if recent_convs %}
+          <div class="list-group list-group-flush">
+            {% for conv in recent_convs %}
+            <a href="{{ url_for('ai.chat', conv_id=conv.id) }}"
+               class="list-group-item list-group-item-action d-flex align-items-start gap-3 py-3 bg-transparent border-0 border-bottom">
+              <div class="conv-icon flex-shrink-0">
+                <i class="bi bi-chat-left-dots text-accent"></i>
+              </div>
+              <div class="flex-grow-1 overflow-hidden">
+                <div class="fw-semibold text-truncate">{{ conv.title }}</div>
+                <div class="text-muted small">{{ conv.updated_at.strftime('%d %b %Y, %H:%M') }}</div>
+              </div>
+            </a>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-state text-center py-5">
+            <i class="bi bi-chat-dots text-muted" style="font-size:3rem"></i>
+            <p class="text-muted mt-3 mb-2">No conversations yet.</p>
+            <a href="{{ url_for('ai.chat') }}" class="btn btn-primary btn-sm">Start Chatting</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
