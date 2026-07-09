@@ -73,8 +73,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 900);
   }
 
-  // Click anywhere in zone (not just the button)
+  // Click anywhere in zone (not the button itself — it already calls fileInput.click())
   uploadZone.addEventListener("click", (e) => {
-    if (e.target.tagName !== "BUTTON") fileInput.click();
+    const tag = e.target.tagName;
+    const isBtn = tag === "BUTTON" || e.target.closest("button");
+    if (!isBtn) fileInput.click();
   });
 });

@@ -80,11 +80,28 @@ window.showToast = function (message, type = "primary") {
 // ── Markdown-ish text formatter ───────────────────────────────────────────────
 window.formatAIText = function (text) {
   if (!text) return "";
-  return text
-    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-    .replace(/^#{1,3}\s(.+)$/gm, "<strong>$1</strong>")
-    .replace(/^[-•]\s(.+)$/gm, "<li>$1</li>")
-    .replace(/(<li>.*<\/li>)/gs, "<ul>$1</ul>")
-    .replace(/\n{2,}/g, "<br/><br/>")
-    .replace(/\n/g, "<br/>");
+
+  // 1. Bold: **word**
+  text = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+  // 2. Headings: # H1 / ## H2 / ### H3
+  text = text.replace(/^#{1,3}\s+(.+)$/gm, "<strong class='d-block mt-2'>$1</strong>");
+
+  // 3. Bullet lines — support -, *, • and numbered 1. 2. 3.
+  text = text.replace(/^(?:[-*•]|\d+\.)\s+(.+)$/gm, "<li>$1</li>");
+
+  // 4. Wrap consecutive <li> blocks in <ul> — split on blank lines first
+  const parts = text.split(/\n{2,}/);
+  text = parts.map((chunk) => {
+    if (chunk.includes("<li>")) {
+      // Clean orphan newlines around li tags
+      return "<ul class='ps-3 my-1'>" + chunk.replace(/\n?(<li>)/g, "$1").replace(/(<\/li>)\n?/g, "$1") + "</ul>";
+    }
+    return chunk;
+  }).join("<br/><br/>");
+
+  // 5. Remaining single newlines → <br/>
+  text = text.replace(/\n/g, "<br/>");
+
+  return text;
 };

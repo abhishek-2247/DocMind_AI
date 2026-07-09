@@ -601,6 +601,39 @@ body {
   .chat-messages { height: 50vh; }
 }
 
+/* ── Prose output (AI text rendering) ───────────────── */
+.prose {
+  font-size: .9rem;
+  line-height: 1.85;
+  color: var(--text);
+  word-break: break-word;
+}
+.prose ul  { padding-left: 1.25rem; margin-bottom: .5rem; }
+.prose li  { margin-bottom: .25rem; }
+.prose strong { color: var(--text); }
+.prose br + br { display: block; content: ""; margin-top: .4rem; }
+
+/* ── Modal dark mode ─────────────────────────────────── */
+.modal-content {
+  background: var(--surface) !important;
+  border-color: var(--border) !important;
+  color: var(--text);
+}
+.modal-header,
+.modal-footer { border-color: var(--border) !important; }
+.modal-backdrop.show { opacity: .6; }
+[data-theme="dark"] .modal-backdrop { background-color: #000; }
+[data-theme="dark"] .modal-content  { box-shadow: 0 8px 32px rgba(0,0,0,.5); }
+
+/* ── Progress bar ────────────────────────────────────── */
+.progress-bar { background: var(--accent); }
+
+/* ── Spinner ─────────────────────────────────────────── */
+.spinner-border { color: var(--accent) !important; }
+
+/* ── Badge secondary ─────────────────────────────────── */
+[data-theme="dark"] .badge.bg-secondary { background: var(--surface-3) !important; color: var(--text-muted) !important; }
+
 /* ── Scrollbar ───────────────────────────────────────── */
 ::-webkit-scrollbar            { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track      { background: transparent; }

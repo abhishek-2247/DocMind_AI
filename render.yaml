@@ -14,6 +14,10 @@ services:
         value: production
       - key: SECRET_KEY
         generateValue: true
+      # IMPORTANT: Render's filesystem is ephemeral — use /tmp for SQLite.
+      # For persistent data, replace with a PostgreSQL DATABASE_URL.
+      - key: DATABASE_URL
+        value: sqlite:////tmp/docmind.db
       - key: IBM_API_KEY
         sync: false
       - key: IBM_PROJECT_ID

@@ -112,6 +112,10 @@
         <span class="text-muted small">
           <i class="bi bi-cpu me-1"></i>Powered by IBM watsonx.ai
         </span>
+        <span class="text-muted small">
+          <kbd class="text-muted" style="background:var(--surface-2);border:1px solid var(--border);border-radius:4px;padding:1px 5px;font-size:.7rem">Enter</kbd> send &nbsp;
+          <kbd class="text-muted" style="background:var(--surface-2);border:1px solid var(--border);border-radius:4px;padding:1px 5px;font-size:.7rem">Shift+Enter</kbd> newline
+        </span>
         <span class="text-muted small" id="currentConvLabel">
           {% if selected_conv %}{{ selected_conv.title[:40] }}{% else %}New conversation{% endif %}
         </span>
